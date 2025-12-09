@@ -70,16 +70,6 @@ def user_logout(request):
     return redirect("login")
 
 
-# --------------------- DASHBOARD ---------------------
-# @login_required
-# def dashboard(request):
-#     bookings = request.user.bookings.all()
-#     testimonials = request.user.testimonial_set.all()
-
-#     return render(request, "dashboard.html", {
-#         "bookings": bookings,
-#         "testimonials": testimonials
-#     })
 
 @login_required
 def dashboard(request):
@@ -99,7 +89,9 @@ def book_car(request):
         if form.is_valid():
             booking = form.save(commit=False)
             booking.user = request.user
+            booking.status = "Pending"   # ⭐ IMPORTANT
             booking.save()
+            messages.success(request, "Booking created successfully!")
             return redirect("booking_history")
 
     form = BookingForm()
@@ -107,11 +99,17 @@ def book_car(request):
 
 
 # --------------------- BOOKING HISTORY ---------------------
+# @login_required
+# def booking_history(request):
+#     return render(request, "booking_history.html", {
+#         "bookings": request.user.bookings.all()
+#     })
+
 @login_required
 def booking_history(request):
-    return render(request, "booking_history.html", {
-        "bookings": request.user.bookings.all()
-    })
+    bookings = Booking.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'core/booking_history.html', {'bookings': bookings})
+
 
 
 # --------------------- UPDATE PROFILE ---------------------

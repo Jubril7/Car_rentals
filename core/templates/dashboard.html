@@ -77,6 +77,26 @@
             color: white;
         }
 
+        .floating-book-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #007bff;
+            color: white;
+            font-size: 28px;
+            padding: 15px 20px;
+            border-radius: 50%;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: 0.3s ease;
+        }
+
+        .floating-book-btn:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+        }
+
+
     </style>
 </head>
 <body>
@@ -136,6 +156,9 @@
         </div>
     </main>
 </div>
+
+<a href="{% url 'book_car' %}" class="floating-book-btn">🚗</a>
+
 
 </body>
 </html>

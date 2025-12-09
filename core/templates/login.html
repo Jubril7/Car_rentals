@@ -29,12 +29,26 @@
             margin-bottom: 20px;
         }
 
-        input {
-            width: 92%;
-            padding: 12px;
+        .input-container {
+            position: relative;
             margin: 10px 0;
+        }
+
+        input {
+            width: 86%;
+            padding: 12px 40px 12px 12px; /* space for eye icon */
             border-radius: 8px;
             border: 1px solid #ccc;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #555;
         }
 
         button {
@@ -79,16 +93,29 @@
 <div class="login-box">
     <h2>Login</h2>
 
-    {% if message %}
-        <p class="msg">{{ message }}</p>
-    {% endif %}
+    <!-- {% if messages %}
+        <div class="msg">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %} -->
 
     <form method="POST">
         {% csrf_token %}
 
-        <input type="email" name="email" placeholder="Email Address" required>
+        <!-- Username Field -->
+        <div class="input-container">
+            <input type="text" name="username" placeholder="Username" value="{{ form.username.value|default_if_none:'' }}" required>
+            {{ form.username.errors }}
+        </div>
 
-        <input type="password" name="password" placeholder="Password" required>
+        <!-- Password Field with Eye Icon -->
+        <div class="input-container">
+            <input type="password" name="password" id="password" placeholder="Password" required>
+            {{ form.password.errors }}
+            <span class="toggle-password" onclick="togglePassword()">👁️</span>
+        </div>
 
         <button type="submit">Login</button>
     </form>
@@ -98,5 +125,11 @@
     </div>
 </div>
 
+<script>
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
+    }
+</script>
 </body>
 </html>

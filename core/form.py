@@ -1,24 +1,27 @@
 from django import forms
-from .models import Contact
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import User, Booking, Testimonial
+from .models import Booking, Testimonial, Contact
 
-class ContactForm(forms.ModelForm):
-    class Meta:
-        model = Contact
-        fields = ['name', 'email', 'message']
-
+User = get_user_model()
 
 class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
     class Meta:
         model = User
         fields = ['username', 'email', 'phone', 'password1', 'password2']
 
 class UpdateProfileForm(UserChangeForm):
-    password = None  
+    password = None  # hide password field
     class Meta:
         model = User
         fields = ['username', 'email', 'phone']
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = ['name', 'email', 'message']
 
 class BookingForm(forms.ModelForm):
     class Meta:
@@ -29,10 +32,3 @@ class TestimonialForm(forms.ModelForm):
     class Meta:
         model = Testimonial
         fields = ['message']
-
-class CustomRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-
-    class Meta:
-        model = User
-        fields = ["username", "email", "password1", "password2"]

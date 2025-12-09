@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Fast Cars Rental</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f5f5;
+        }
+
+        header {
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            min-height: 90vh;
+        }
+
+        nav {
+            width: 220px;
+            background: #343a40;
+            color: white;
+            padding: 20px;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            background: #495057;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background: #007bff;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome, {{ user.username }}</h1>
+</header>
+
+<div class="container">
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'book_car' %}">Book a Car</a>
+        <a href="{% url 'booking_history' %}">My Bookings</a>
+        <a href="{% url 'post_testimonial' %}">Post Testimonial</a>
+        <a href="{% url 'view_testimonials' %}">View Testimonials</a>
+        <a href="{% url 'update_profile' %}">Update Profile</a>
+        <a href="{% url 'change_password' %}">Change Password</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <main>
+        <div class="section">
+            <h2>Recent Bookings</h2>
+            {% if bookings %}
+                <table>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                    </tr>
+                    {% for booking in bookings %}
+                        <tr>
+                            <td>{{ booking.vehicle }}</td>
+                            <td>{{ booking.start_date }}</td>
+                            <td>{{ booking.end_date }}</td>
+                            <td>{{ booking.status }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>No bookings yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2>Testimonials</h2>
+            {% if testimonials %}
+                <ul>
+                    {% for t in testimonials %}
+                        <li>{{ t.message }} — <strong>{{ t.user.username }}</strong></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No testimonials yet.</p>
+            {% endif %}
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

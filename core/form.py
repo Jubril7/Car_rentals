@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -15,7 +15,7 @@ class RegisterForm(UserCreationForm):
         fields = ['username', 'email', 'phone', 'password1', 'password2']
 
 class UpdateProfileForm(UserChangeForm):
-    password = None  # hide password field
+    password = None
     class Meta:
         model = User
         fields = ['username', 'email', 'phone']

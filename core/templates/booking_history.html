@@ -1,51 +1,168 @@
 {% load static %}
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>My Bookings</title>
-  <link rel="stylesheet" href="{% static 'core/style.css' %}">
-  <style>
-    .wrap{max-width:900px;margin:40px auto}
-    table{width:100%;border-collapse:collapse;background:#fff;box-shadow:0 6px 15px rgba(0,0,0,0.06);border-radius:6px;overflow:hidden}
-    th,td{padding:12px 14px;border-bottom:1px solid #eee;text-align:left}
-    th{background:#007bff;color:#fff}
-    .status{padding:6px 8px;border-radius:6px;color:#fff;font-weight:600}
-    .Pending{background:#f0ad4e}
-    .Confirmed{background:#28a745}
-    .Cancelled{background:#6c757d}
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <h2>My Bookings</h2>
+    <meta charset="UTF-8">
+    <title>My Bookings - Fast Cars Rental</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
 
-    {% if bookings %}
-      <table>
-        <thead>
-          <tr>
-            <th>Vehicle</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Status</th>
-            <th>Requested On</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for b in bookings %}
-            <tr>
-              <td>{{ b.vehicle }}</td>
-              <td>{{ b.start_date }}</td>
-              <td>{{ b.end_date }}</td>
-              <td><span class="status {{ b.status }}">{{ b.status }}</span></td>
-              <td>{{ b.created_at|date:"Y-m-d H:i" }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p>You have no bookings yet. <a href="{% url 'book_car' %}">Book a car now</a>.</p>
-    {% endif %}
-  </div>
+        header {
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            min-height: 90vh;
+        }
+
+        nav {
+            width: 220px;
+            background: #343a40;
+            color: white;
+            padding: 20px;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            background: #495057;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background: #007bff;
+            color: #fff;
+        }
+
+        .status {
+            padding: 6px 8px;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .Pending {
+            background: #f0ad4e;
+        }
+
+        .Confirmed {
+            background: #28a745;
+        }
+
+        .Cancelled {
+            background: #6c757d;
+        }
+
+        a.link {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a.link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>My Bookings</h1>
+</header>
+
+<div class="container">
+
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'book_car' %}">Book a Car</a>
+        <a href="{% url 'booking_history' %}">My Bookings</a>
+        <a href="{% url 'post_testimonial' %}">Post Testimonial</a>
+        <a href="{% url 'view_testimonials' %}">View Testimonials</a>
+        <a href="{% url 'update_profile' %}">Update Profile</a>
+        <a href="{% url 'change_password' %}">Change Password</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <main>
+        <div class="section">
+
+            {% if bookings %}
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th>Status</th>
+                        <th>Requested On</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for b in bookings %}
+                        <tr>
+                            <td>{{ b.vehicle }}</td>
+                            <td>{{ b.start_date }}</td>
+                            <td>{{ b.end_date }}</td>
+                            <td><span class="status {{ b.status }}">{{ b.status }}</span></td>
+                            <td>{{ b.created_at|date:"Y-m-d H:i" }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No bookings found. 
+                   <a class="link" href="{% url 'book_car' %}">Book a car now</a>.
+                </p>
+            {% endif %}
+
+        </div>
+    </main>
+
+</div>
+
 </body>
 </html>

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
@@ -99,16 +99,11 @@ def book_car(request):
 
 
 # --------------------- BOOKING HISTORY ---------------------
-# @login_required
-# def booking_history(request):
-#     return render(request, "booking_history.html", {
-#         "bookings": request.user.bookings.all()
-#     })
 
 @login_required
 def booking_history(request):
     bookings = Booking.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'core/booking_history.html', {'bookings': bookings})
+    return render(request, 'booking_history.html', {'bookings': bookings})
 
 
 
@@ -133,8 +128,9 @@ def change_password(request):
     if request.method == "POST":
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Password changed.")
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Password changed successfully.")
             return redirect("dashboard")
 
     form = PasswordChangeForm(request.user)
@@ -159,6 +155,6 @@ def post_testimonial(request):
 # --------------------- VIEW TESTIMONIALS ---------------------
 def view_testimonials(request):
     testimonials = Testimonial.objects.filter(active=True)
-    return render(request, "view_testimonials.html", {
+    return render(request, "view_testimonial.html", {
         "testimonials": testimonials
     })

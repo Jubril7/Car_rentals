@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Fast Cars Rental</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f5f6fa;
+        }
+
+        header {
+            background: #343a40;
+            color: white;
+            padding: 18px 30px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            min-height: 92vh;
+        }
+
+        /* SIDEBAR */
+        nav {
+            width: 240px;
+            background: #212529;
+            color: white;
+            padding: 20px;
+        }
+
+        nav h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #343a40;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        nav a:hover {
+            background: #495057;
+        }
+
+        /* MAIN DASHBOARD */
+        main {
+            flex: 1;
+            padding: 25px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        /* STAT BOXES */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .stat-box h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .stat-box .number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #007bff;
+        }
+
+        /* TABLES */
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        table th {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>Admin Dashboard</header>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <nav>
+        <h3>Admin Menu</h3>
+        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+        <a href="{% url 'admin_manage_bookings' %}">Manage Bookings</a>
+        <a href="{% url 'admin_manage_vehicles' %}">Manage Vehicles</a>
+        <a href="{% url 'admin_manage_brands' %}">Manage Vehicle Brands</a>
+        <a href="{% url 'admin_manage_testimonials' %}">Manage Testimonials</a>
+        <a href="{% url 'admin_manage_users' %}">Manage Users</a>
+        <a href="{% url 'admin_queries' %}">Contact Queries</a>
+        <a href="{% url 'admin_change_password' %}">Change Password</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+        <!-- STATS BOXES -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <h3>Total Users</h3>
+                <div class="number">{{ total_users }}</div>
+            </div>
+
+            <div class="stat-box">
+                <h3>Total Bookings</h3>
+                <div class="number">{{ total_bookings }}</div>
+            </div>
+
+            <div class="stat-box">
+                <h3>Total Vehicles</h3>
+                <div class="number">{{ total_vehicles }}</div>
+            </div>
+
+            <div class="stat-box">
+                <h3>Total Testimonials</h3>
+                <div class="number">{{ total_testimonials }}</div>
+            </div>
+        </div>
+
+        <!-- RECENT BOOKINGS -->
+        <div class="section">
+            <h2>Recent Bookings</h2>
+
+            {% if bookings %}
+            <table>
+                <tr>
+                    <th>User</th>
+                    <th>Vehicle</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Status</th>
+                </tr>
+
+                {% for b in bookings %}
+                <tr>
+                    <td>{{ b.user.username }}</td>
+                    <td>{{ b.vehicle }}</td>
+                    <td>{{ b.start_date }}</td>
+                    <td>{{ b.end_date }}</td>
+                    <td>{{ b.status }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            {% else %}
+                <p>No bookings yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- RECENT TESTIMONIALS -->
+        <div class="section">
+            <h2>Latest Testimonials</h2>
+
+            {% if testimonials %}
+                <ul>
+                    {% for t in testimonials %}
+                        <li><strong>{{ t.user.username }}:</strong> {{ t.message }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No testimonials.</p>
+            {% endif %}
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

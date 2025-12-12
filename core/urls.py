@@ -13,5 +13,14 @@ urlpatterns = [
     path('change-password/', views.change_password, name='change_password'),
     path('post-testimonial/', views.post_testimonial, name='post_testimonial'),
     path('testimonials/', views.view_testimonials, name='view_testimonials'),
+    path("admin-dashboard/", views.admin_dashboard, name="admin_dashboard"),
+    path("admin/manage-bookings/", views.admin_manage_bookings, name="admin_manage_bookings"),
+    path('dashboard/manage-bookings/', views.admin_manage_bookings, name='admin_manage_bookings'),
+    path('dashboard/manage-vehicles/', views.admin_manage_vehicles, name='admin_manage_vehicles'),
+    path('dashboard/manage-brands/', views.admin_manage_brands, name='admin_manage_brands'),
+    path('dashboard/manage-testimonials/', views.admin_manage_testimonials, name='admin_manage_testimonials'),
+    path('dashboard/manage-users/', views.admin_manage_users, name='admin_manage_users'),
+    path('dashboard/queries/', views.admin_queries, name='admin_queries'),
+    path('dashboard/change-password/', views.admin_change_password, name='admin_change_password'),
 
 ]

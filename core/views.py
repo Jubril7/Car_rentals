@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from .models import Vehicle, Booking, Testimonial
 from .form import (
     ContactForm, RegisterForm, UpdateProfileForm,
     BookingForm, TestimonialForm
 )
+User = get_user_model()
 
 
 # --------------------- HOME ---------------------
@@ -55,7 +57,12 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             messages.success(request, f"Welcome back, {user.username}!")
+
+            if user.is_staff:  
+                return redirect("admin_dashboard")
+
             return redirect("dashboard")
+
         else:
             messages.error(request, "Invalid username or password")
     else:
@@ -158,3 +165,55 @@ def view_testimonials(request):
     return render(request, "view_testimonial.html", {
         "testimonials": testimonials
     })
+
+# @login_required
+# @user_passes_test(lambda u: u.is_staff)
+# def admin_dashboard(request):
+#     return render(request, "admin_dashboard.html")
+
+@login_required
+@user_passes_test(lambda u: u.is_staff) 
+def admin_dashboard(request):
+    # gather counts and recent objects
+    context = {
+        "total_users": User.objects.count(),
+        "total_bookings": Booking.objects.count(),
+        "total_vehicles": Vehicle.objects.count(),
+        "total_testimonials": Testimonial.objects.count(),
+        "bookings": Booking.objects.order_by('-created_at')[:6],
+        "testimonials": Testimonial.objects.order_by('-created_at')[:6],
+    }
+    return render(request, "admin_dashboard.html", context)
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_manage_bookings(request):
+    bookings = Booking.objects.all().order_by("-created_at")
+    return render(request, "admin_manage_bookings.html", {"bookings": bookings})
+
+def admin_required(view_func):
+    return user_passes_test(lambda u: u.is_staff, login_url='login')(view_func)
+
+@admin_required
+def admin_manage_vehicles(request):
+    return render(request, 'admin_manage_vehicles.html')
+
+@admin_required
+def admin_manage_brands(request):
+    return render(request, 'admin_manage_brands.html')
+
+@admin_required
+def admin_manage_testimonials(request):
+    return render(request, 'admin_manage_testimonials.html')
+
+@admin_required
+def admin_manage_users(request):
+    return render(request, 'admin_manage_users.html')
+
+@admin_required
+def admin_queries(request):
+    return render(request, 'admin_queries.html')
+
+@admin_required
+def admin_change_password(request):
+    return render(request, 'admin_change_password.html')

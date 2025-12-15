@@ -17,6 +17,7 @@ class Vehicle(models.Model):
     daily_rent = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='vehicles/', blank=True, null=True)
     available = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.brand.name} - {self.name}"

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -6,7 +6,7 @@ from django.contrib.auth.forms import PasswordChangeForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 
-from .models import Vehicle, Booking, Testimonial
+from .models import Vehicle, Booking, Testimonial, VehicleBrand
 from .form import (
     ContactForm, RegisterForm, UpdateProfileForm,
     BookingForm, TestimonialForm
@@ -195,12 +195,95 @@ def admin_required(view_func):
     return user_passes_test(lambda u: u.is_staff, login_url='login')(view_func)
 
 @admin_required
-def admin_manage_vehicles(request):
-    return render(request, 'admin_manage_vehicles.html')
+def admin_add_vehicle(request):
+    if request.method == "POST":
+        brand_id = request.POST.get('brand')
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        daily_rent = request.POST.get('daily_rent')
+        available = True if request.POST.get('available') == 'on' else False
+        image = request.FILES.get('image')
+
+        brand = VehicleBrand.objects.get(id=brand_id)
+        Vehicle.objects.create(
+            brand=brand,
+            name=name,
+            description=description,
+            daily_rent=daily_rent,
+            available=available,
+            image=image
+        )
+        messages.success(request, f"Vehicle '{name}' added successfully!")
+        return redirect('admin_manage_vehicles')
+    
+    return redirect('admin_manage_vehicles')
+
+def admin_edit_vehicle(request, vehicle_id):
+    vehicle = get_object_or_404(Vehicle, id=vehicle_id)
+    brands = VehicleBrand.objects.all()
+
+    if request.method == "POST":
+        vehicle.name = request.POST.get('name')
+        vehicle.brand_id = request.POST.get('brand')
+        vehicle.description = request.POST.get('description')
+        vehicle.daily_rent = request.POST.get('daily_rent')
+        vehicle.available = True if request.POST.get('available') == 'on' else False
+
+        if 'image' in request.FILES:
+            vehicle.image = request.FILES['image']
+
+        vehicle.save()
+        return redirect('admin_manage_vehicles')
+
+    return render(request, 'admin_edit_vehicle.html', {
+        'vehicle': vehicle,
+        'brands': brands
+    })
+
+def admin_delete_vehicle(request, vehicle_id):
+    vehicle = get_object_or_404(Vehicle, id=vehicle_id)
+    if request.method == "POST":
+        vehicle.delete()
+    return redirect('admin_manage_vehicles')
+
+
 
 @admin_required
+def admin_manage_vehicles(request):
+    vehicles = Vehicle.objects.all().order_by('-created_at')
+    brands = VehicleBrand.objects.all()
+    return render(request, 'admin_manage_vehicles.html', {
+        'vehicles': vehicles,
+        'brands': brands
+    })
+
+# @admin_required
+# def admin_manage_brands(request):
+#     return render(request, 'admin_manage_brands.html')
+
 def admin_manage_brands(request):
-    return render(request, 'admin_manage_brands.html')
+    brands = VehicleBrand.objects.all()
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+
+        if name:
+            VehicleBrand.objects.create(
+                name=name,
+                description=description
+            )
+            return redirect("admin_manage_brands")
+
+    return render(request, "admin_manage_brands.html", {
+        "brands": brands
+    })
+
+
+def admin_delete_brand(request, brand_id):
+    brand = get_object_or_404(VehicleBrand, id=brand_id)
+    brand.delete()
+    return redirect("admin_manage_brands")
 
 @admin_required
 def admin_manage_testimonials(request):

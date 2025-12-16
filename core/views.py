@@ -81,7 +81,7 @@ def user_logout(request):
 @login_required
 def dashboard(request):
     bookings = Booking.objects.filter(user=request.user)
-    testimonials = Testimonial.objects.all() 
+    testimonials = Testimonial.objects.filter(active=True)
     return render(request, "dashboard.html", {
         "bookings": bookings,
         "testimonials": testimonials
@@ -166,10 +166,6 @@ def view_testimonials(request):
         "testimonials": testimonials
     })
 
-# @login_required
-# @user_passes_test(lambda u: u.is_staff)
-# def admin_dashboard(request):
-#     return render(request, "admin_dashboard.html")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff) 
@@ -257,10 +253,6 @@ def admin_manage_vehicles(request):
         'brands': brands
     })
 
-# @admin_required
-# def admin_manage_brands(request):
-#     return render(request, 'admin_manage_brands.html')
-
 def admin_manage_brands(request):
     brands = VehicleBrand.objects.all()
 
@@ -285,9 +277,28 @@ def admin_delete_brand(request, brand_id):
     brand.delete()
     return redirect("admin_manage_brands")
 
+
 @admin_required
 def admin_manage_testimonials(request):
-    return render(request, 'admin_manage_testimonials.html')
+    testimonials = Testimonial.objects.select_related('user').order_by('-created_at')
+    return render(request, 'admin_manage_testimonials.html', {
+        'testimonials': testimonials
+    })
+
+
+@admin_required
+def toggle_testimonial(request, id):
+    testimonial = get_object_or_404(Testimonial, id=id)
+    testimonial.active = not testimonial.active
+    testimonial.save()
+    return redirect('admin_manage_testimonials')
+
+
+@admin_required
+def delete_testimonial(request, id):
+    testimonial = get_object_or_404(Testimonial, id=id)
+    testimonial.delete()
+    return redirect('admin_manage_testimonials')
 
 @admin_required
 def admin_manage_users(request):

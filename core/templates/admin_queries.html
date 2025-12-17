@@ -1,3 +1,141 @@
-<h2>Page under construction</h2>
-<p>This admin page will be implemented soon.</p>
-<a href="{% url 'admin_dashboard' %}">Back to dashboard</a>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Queries - Admin</title>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+        }
+
+        header {
+            background: #343a40;
+            color: white;
+            padding: 18px 30px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            min-height: 92vh;
+        }
+
+        nav {
+            width: 240px;
+            background: #212529;
+            color: white;
+            padding: 20px;
+        }
+
+        nav h3 {
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #343a40;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background: #495057;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 50px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 450px;
+        }
+
+        .empty-state img {
+            width: 160px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .empty-state h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>Admin Dashboard</header>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <nav>
+        <h3>Admin Menu</h3>
+        <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+        <a href="{% url 'admin_manage_bookings' %}">Manage Bookings</a>
+        <a href="{% url 'admin_manage_vehicles' %}">Manage Vehicles</a>
+        <a href="{% url 'admin_manage_brands' %}">Manage Vehicle Brands</a>
+        <a href="{% url 'admin_manage_testimonials' %}">Manage Testimonials</a>
+        <a href="{% url 'admin_manage_users' %}">Manage Users</a>
+        <a href="{% url 'admin_queries' %}">Contact Queries</a>
+        <a href="{% url 'admin_change_password' %}">Change Password</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <!-- MAIN -->
+    <main>
+        <div class="empty-state">
+            <img src="data:image/png;base64,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" alt="No Queries">
+            <h2>No Contact Queries</h2>
+            <p>
+                There are currently no messages from users.<br>
+                When users submit the contact form, they will appear here.
+            </p>
+
+            <a href="{% url 'admin_dashboard' %}" class="btn">
+                Back to Dashboard
+            </a>
+        </div>
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -301,8 +301,26 @@ def delete_testimonial(request, id):
     return redirect('admin_manage_testimonials')
 
 @admin_required
+# def admin_manage_users(request):
+#     return render(request, 'admin_manage_users.html')
 def admin_manage_users(request):
-    return render(request, 'admin_manage_users.html')
+    users = User.objects.all().order_by('-date_joined')
+
+    return render(request, 'admin_manage_users.html', {
+        'users': users
+    })
+@admin_required
+def toggle_user_status(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+
+    if user == request.user:
+        return redirect('admin_manage_users')
+
+    user.is_active = not user.is_active
+    user.save()
+
+    return redirect('admin_manage_users')
+
 
 @admin_required
 def admin_queries(request):
@@ -310,4 +328,21 @@ def admin_queries(request):
 
 @admin_required
 def admin_change_password(request):
-    return render(request, 'admin_change_password.html')
+    if request.method == "POST":
+        current = request.POST.get("current_password")
+        new = request.POST.get("new_password")
+        confirm = request.POST.get("confirm_password")
+
+        if not request.user.check_password(current):
+            messages.error(request, "Current password is incorrect")
+        elif new != confirm:
+            messages.error(request, "Passwords do not match")
+        elif len(new) < 6:
+            messages.error(request, "Password must be at least 6 characters")
+        else:
+            request.user.set_password(new)
+            request.user.save()
+            update_session_auth_hash(request, request.user)
+            messages.success(request, "Password changed successfully")
+
+    return render(request, "admin_change_password.html")

@@ -28,6 +28,7 @@ urlpatterns = [
     path('testimonial/toggle/<int:id>/', views.toggle_testimonial, name='toggle_testimonial'),
     path('testimonial/delete/<int:id>/', views.delete_testimonial, name='delete_testimonial'),
     path('dashboard/manage-users/', views.admin_manage_users, name='admin_manage_users'),
+    path('dashboard/user/toggle/<int:user_id>/', views.toggle_user_status, name='toggle_user_status'),
     path('dashboard/queries/', views.admin_queries, name='admin_queries'),
     path('dashboard/change-password/', views.admin_change_password, name='admin_change_password'),
 
